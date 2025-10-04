@@ -53,7 +53,7 @@ jobs:
     needs: [model-traning,data-prep,register-dataset]
     steps:
       - uses: actions/checkout@v3
-      - name: pip install -r tourism_project/requirements.txt
+      - name:  Install Dependencies
         run: pip install -r tourism_project/requirements.txt
       - name: Push files to Frontend Hugging Face Space
         env:
