@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: kill ngrok
-        run: !pkill ngrok
+        run:  pkill ngrok
   register-dataset:
     runs-on: ubuntu-latest
     steps:
