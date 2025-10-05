@@ -11,7 +11,7 @@ MODEL_FILENAME = "tourism_package_prediction_model.joblib"  # Replace with your 
 # Download and load the model
 # Ensure the model filename here matches the one used in your training script's mlflow.sklearn.log_model call
 try:
-    model_path = hf_hub_download(repo_id=HF_REPO_ID, filename=MODEL_FILENAME)
+    model_path = hf_hub_download(repo_id=HF_REPO_ID, filename=MODEL_FILENAME,repo_type="model")
     model = joblib.load(model_path)
     st.success("Model loaded successfully from Hugging Face Hub.")
 except Exception as e:

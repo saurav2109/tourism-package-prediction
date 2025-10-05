@@ -16,6 +16,11 @@ import os
 import mlflow
 # for handling class imbalance
 from sklearn.utils.class_weight import compute_class_weight
+from huggingface_hub import HfApi # Import HfApi
+
+# Initialize HfApi for uploading the model file
+api = HfApi(token=os.getenv("HF_TOKEN"))
+
 
 Xtrain_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/Xtrain.csv"
 Xtest_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/Xtest.csv"
@@ -125,7 +130,25 @@ with mlflow.start_run():
         "test_f1-score_1": test_report['1']['f1-score'] if '1' in test_report else 0
     })
 
-    # Log the model
+    # Log the model with MLflow
     mlflow.sklearn.log_model(best_model, "tourism_package_prediction_model")
 
-print("Model training and evaluation complete. Check MLflow UI for results.")
+    print("Model training and evaluation complete. Check MLflow UI for results.")
+
+    # Save the trained model to a joblib file
+    model_filename = "tourism_package_prediction_model.joblib"
+    model_save_path = os.path.join("tourism_project/model_building", model_filename)
+    joblib.dump(best_model, model_save_path)
+    print(f"Model saved locally to {model_save_path}")
+
+    # Upload the saved model file to Hugging Face Hub
+    try:
+        api.upload_file(
+            path_or_fileobj=model_save_path,
+            path_in_repo=model_filename,
+            repo_id="sauravghosh2109/tourism-package-predictor", # Ensure this is your model repo ID
+            repo_type="model", # Ensure this is "model" if you are uploading to a model repo
+        )
+        print(f"Model file '{model_filename}' uploaded to Hugging Face Hub.")
+    except Exception as e:
+        print(f"Error uploading model file to Hugging Face Hub: {e}")
