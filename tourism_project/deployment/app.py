@@ -5,19 +5,23 @@ import joblib
 import os
 
 # Define the Hugging Face repo and filename for the model
-HF_REPO_ID = "sauravghosh2109/tourism-package-predictor"  # Replace with your actual repo ID if different
+HF_REPO_ID = "sauravghosh2109/tourism-package-predictor-model"  # Corrected repo ID to the model repo
 MODEL_FILENAME = "tourism_package_prediction_model.joblib"  # Replace with your actual model filename if different
+
+# Get Hugging Face token from environment variables
+hf_token = os.getenv("HF_TOKEN")
 
 # Download and load the model
 # Ensure the model filename here matches the one used in your training script's mlflow.sklearn.log_model call
 try:
-    model_path = hf_hub_download(repo_id=HF_REPO_ID, filename=MODEL_FILENAME,repo_type="model")
+    # Use the authentication token when downloading from Hugging Face Hub
+    model_path = hf_hub_download(repo_id=HF_REPO_ID, filename=MODEL_FILENAME, repo_type="model", use_auth_token=hf_token)
     model = joblib.load(model_path)
     st.success("Model loaded successfully from Hugging Face Hub.")
 except Exception as e:
     st.error(f"Error loading model from Hugging Face Hub: {e}")
     st.info(
-        f"Attempted to download model '{MODEL_FILENAME}' from repo '{HF_REPO_ID}'. Please ensure the model exists in your repo."
+        f"Attempted to download model '{MODEL_FILENAME}' from repo '{HF_REPO_ID}'. Please ensure the model exists in your repo and your Hugging Face token is correctly set up."
     )
     st.stop()  # Stop the app if the model cannot be loaded
 
@@ -187,7 +191,8 @@ input_data_processed = pd.get_dummies(
 # In a real deployment, you might save and load the list of column names.
 
 try:
-    xtrain_cols_path = hf_hub_download(repo_id=HF_REPO_ID, filename="Xtrain.csv")
+    # Use the authentication token when downloading from Hugging Face Hub
+    xtrain_cols_path = hf_hub_download(repo_id=HF_REPO_ID, filename="Xtrain.csv", use_auth_token=hf_token)
     xtrain_cols_df = pd.read_csv(xtrain_cols_path, nrows=0)  # Load only header
     training_columns = xtrain_cols_df.columns.tolist()
 
