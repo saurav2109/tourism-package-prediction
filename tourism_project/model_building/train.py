@@ -1,5 +1,6 @@
 import pandas as pd
 import sklearn
+import numpy as np # Import numpy
 # for data preprocessing and pipeline creation
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
@@ -50,7 +51,7 @@ numerical_features = Xtrain.select_dtypes(include=['float64', 'int64']).columns.
 
 # Set the class weight to handle class imbalance in the target variable 'ProdTaken'
 # Since ytrain is a pandas Series, compute_class_weight can be applied directly
-classes = [0, 1] # Assuming the target classes are 0 and 1
+classes = np.array([0, 1]) # Assuming the target classes are 0 and 1, converted to numpy array
 class_weights = compute_class_weight('balanced', classes=classes, y=ytrain)
 # Convert class weights to a dictionary for XGBoost
 class_weight_dict = {classes[i]: class_weights[i] for i in range(len(classes))}
