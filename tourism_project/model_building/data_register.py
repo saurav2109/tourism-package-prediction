@@ -19,7 +19,7 @@ except RepositoryNotFoundError:
     print(f"Space '{repo_id}' created.")
 
 api.upload_folder(
-    folder_path="tourism-package-predictor/data",
+    folder_path="tourism_project/data", # Corrected path to the data folder
     repo_id=repo_id,
     repo_type=repo_type,
 )
