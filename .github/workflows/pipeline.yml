@@ -6,7 +6,12 @@ on:
       - main  # Automatically triggers on push to the main branch
 
 jobs:
-
+  kill-ngrok:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: kill ngrok
+        run: pkill ngrok
   register-dataset:
     runs-on: ubuntu-latest
     steps:
