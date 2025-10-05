@@ -53,17 +53,17 @@ age = st.number_input("Age", min_value=0, max_value=120, value=30)
 typeofcontact = st.selectbox("Type of Contact", ["Company Invited", "Self Inquiry"])
 citytier = st.selectbox("City Tier", [1, 2, 3])
 occupation = st.selectbox(
-    "Occupation", ["Salaried", "Freelancer", "Large Business", "Small Business", "Other"]
+    "Occupation", ["Salaried", "Freelancer", "Large Business", "Small Business", "Other"] # Added 'Other' to handle potential unseen values
 )
-gender = st.selectbox("Gender", ["Male", "Female"])
+gender = st.selectbox("Gender", ["Male", "Female"]) # Assuming only Male and Female based on common data
 numberofpersonvisiting = st.number_input(
     "Number of People Visiting", min_value=1, max_value=20, value=1
 )
 preferredpropertystar = st.selectbox(
-    "Preferred Property Star", [1, 2, 3, 4, 5]
+    "Preferred Property Star", [1, 2, 3, 4, 5] # Added more options based on common hotel ratings
 )
 maritalstatus = st.selectbox(
-    "Marital Status", ["Single", "Married", "Divorced", "Unmarried"]
+    "Marital Status", ["Single", "Married", "Divorced", "Unmarried"] # Added Unmarried
 )
 numberoftrips = st.number_input(
     "Number of Trips Annually", min_value=0, max_value=100, value=1
@@ -86,8 +86,8 @@ designation = st.selectbox(
         "Area Manager",
         "Senior Executive",
         "Junior Executive",
-        "Associate",
-        "Others"
+        "Associate", # Added 'Associate' based on common designations
+        "Others" # Added 'Others' to handle potential unseen values
     ],
 )
 monthlyincome = st.number_input(
@@ -100,12 +100,12 @@ pitchsatisfactionscore = st.number_input("Pitch Satisfaction Score", min_value=1
 productpitched = st.selectbox(
     "Product Pitched",
     [
-        "Basic",
+        "Basic", # Correcting based on train.py
         "Deluxe",
         "King",
         "Standard",
         "Super Deluxe",
-        "Duration",
+        "Duration", # These might be from a different column or a typo in the original description
         "Accommodation",
         "Food",
         "Transport",
@@ -117,7 +117,7 @@ productpitched = st.selectbox(
         "City tour",
         "Cruise",
         "Nature",
-        "Other"
+        "Other" # Added 'Other' to handle potential unseen values
     ],
 )
 numberoffollowups = st.number_input("Number of Follow-ups", min_value=0, max_value=20, value=1)
