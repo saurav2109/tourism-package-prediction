@@ -3,7 +3,7 @@ from huggingface_hub import HfApi, create_repo
 import os
 
 
-repo_id = "sauravghosh2109/tourism-package-prediction"
+repo_id = "sauravghosh2109/tourism-package-predictor"
 repo_type = "dataset"
 
 # Initialize API client
@@ -19,7 +19,7 @@ except RepositoryNotFoundError:
     print(f"Space '{repo_id}' created.")
 
 api.upload_folder(
-    folder_path="tourism-package-prediction/data",
+    folder_path="tourism-package-predictor/data",
     repo_id=repo_id,
     repo_type=repo_type,
 )

@@ -16,10 +16,10 @@ import mlflow
 # for handling class imbalance
 from sklearn.utils.class_weight import compute_class_weight
 
-Xtrain_path = "hf://datasets/sauravghosh2109/tourism-package-prediction/Xtrain.csv"
-Xtest_path = "hf://datasets/sauravghosh2109/tourism-package-prediction/Xtest.csv"
-ytrain_path = "hf://datasets/sauravghosh2109/tourism-package-prediction/ytrain.csv"
-ytest_path = "hf://datasets/sauravghosh2109/tourism-package-prediction/ytest.csv"
+Xtrain_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/Xtrain.csv"
+Xtest_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/Xtest.csv"
+ytrain_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/ytrain.csv"
+ytest_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/ytest.csv"
 
 # Load the processed data splits
 Xtrain = pd.read_csv(Xtrain_path)

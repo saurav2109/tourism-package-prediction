@@ -5,7 +5,7 @@ import joblib
 import os
 
 # Define the Hugging Face repo and filename for the model
-HF_REPO_ID = "sauravghosh2109/tourism-package-prediction"  # Replace with your actual repo ID if different
+HF_REPO_ID = "sauravghosh2109/tourism-package-predictor"  # Replace with your actual repo ID if different
 MODEL_FILENAME = "tourism_package_prediction_model.joblib"  # Replace with your actual model filename if different
 
 # Download and load the model
