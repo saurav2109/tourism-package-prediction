@@ -2,7 +2,9 @@ from huggingface_hub.utils import RepositoryNotFoundError, HfHubHTTPError
 from huggingface_hub import HfApi, create_repo
 import os
 
+from pyngrok import ngrok
 
+ngrok.kill()
 repo_id = "sauravghosh2109/tourism-package-predictor"
 repo_type = "dataset"
 
