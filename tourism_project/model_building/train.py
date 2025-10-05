@@ -16,12 +16,13 @@ import os
 import mlflow
 # for handling class imbalance
 from sklearn.utils.class_weight import compute_class_weight
-from huggingface_hub import HfApi # Import HfApi
+from huggingface_hub import HfApi, create_repo # Import HfApi and create_repo
+from huggingface_hub.utils import RepositoryNotFoundError # Import RepositoryNotFoundError
 
 # Initialize HfApi for uploading the model file
 api = HfApi(token=os.getenv("HF_TOKEN"))
 
-
+# Define constants for the dataset and output paths
 Xtrain_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/Xtrain.csv"
 Xtest_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/Xtest.csv"
 ytrain_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/ytrain.csv"
@@ -142,12 +143,27 @@ joblib.dump(best_model, model_save_path)
 print(f"Model saved locally to {model_save_path}")
 
 # Upload the saved model file to Hugging Face Hub
+# Define the repository ID and type for the model
+model_repo_id = "sauravghosh2109/tourism-package-predictor-model" # Use a distinct name or confirm the dataset repo name
+model_repo_type = "model"
+
+try:
+    api.repo_info(repo_id=model_repo_id, repo_type=model_repo_type)
+    print(f"Model space '{model_repo_id}' already exists. Uploading file.")
+except RepositoryNotFoundError:
+    print(f"Model space '{model_repo_id}' not found. Creating new space...")
+    create_repo(repo_id=model_repo_id, repo_type=model_repo_type, private=False)
+    print(f"Model space '{model_repo_id}' created.")
+except Exception as e:
+    print(f"Error checking for model space: {e}")
+    # Depending on the error, you might want to stop or try creating anyway
+
 try:
     api.upload_file(
         path_or_fileobj=model_save_path,
         path_in_repo=model_filename,
-        repo_id="sauravghosh2109/tourism-package-predictor", # Ensure this is your model repo ID
-        repo_type="model", # Ensure this is "model" if you are uploading to a model repo
+        repo_id=model_repo_id, # Use the dedicated model repo ID
+        repo_type=model_repo_type, # Ensure this is "model"
     )
     print(f"Model file '{model_filename}' uploaded to Hugging Face Hub.")
 except Exception as e:
