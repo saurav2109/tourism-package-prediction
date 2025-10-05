@@ -36,22 +36,29 @@ X = df.drop(columns=[target_col])
 y = df[target_col]
 
 # Create a column transformer for one-hot encoding nominal categorical features
+# Use remainder='passthrough' to keep numerical columns
+# Set sparse_output=False to get a dense array
 preprocessor = ColumnTransformer(
     transformers=[
-        ('onehot', OneHotEncoder(handle_unknown='ignore'), nominal_categorical_cols)
+        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False), nominal_categorical_cols)
     ],
-    remainder='passthrough' # Keep numerical columns as they are
+    remainder='passthrough'
 )
+
 
 # Apply preprocessing
 X_processed = preprocessor.fit_transform(X)
 
-# Convert the processed data back to a DataFrame to maintain column names (optional but helpful)
-# Get feature names after one-hot encoding
-onehot_feature_names = preprocessor.named_transformers_['onehot'].get_feature_names_out(nominal_categorical_cols)
-all_feature_names = list(onehot_feature_names) + [col for col in numerical_cols if col in X.columns] # Ensure numerical columns are also in original X
+# Get feature names after preprocessing
+# This will include one-hot encoded feature names and original numerical feature names
+all_feature_names = preprocessor.get_feature_names_out()
 
+# Convert the processed data back to a DataFrame to maintain column names
 X_processed_df = pd.DataFrame(X_processed, columns=all_feature_names)
+
+print(f"Shape of X_processed: {X_processed.shape}")
+print(f"Number of feature names: {len(all_feature_names)}")
+print("Feature names:", all_feature_names)
 
 
 # Perform train-test split
