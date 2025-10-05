@@ -6,6 +6,13 @@ on:
       - main  # Automatically triggers on push to the main branch
 
 jobs:
+  kill-ngrok:
+    runs-on: ubuntu-latest
+    steps:
+       - name: Install Dependencies
+         run: pip install -r tourism_project/ngrok/requirements.txt
+       - name: kill ngrok
+         run: python tourism_project/ngrok/ngrok.py
   register-dataset:
     runs-on: ubuntu-latest
     steps:
