@@ -1,0 +1,2 @@
+pyngrok==7.2.12 -q
+mlflow==3.0.1
