@@ -20,24 +20,65 @@ from huggingface_hub import HfApi # Import HfApi
 
 # Initialize HfApi for uploading the model file
 api = HfApi(token=os.getenv("HF_TOKEN"))
+DATASET_PATH = "hf://datasets/sauravghosh2109/tourism-package-predictor/tourism.csv" # Corrected path to the uploaded file
+df = pd.read_csv(DATASET_PATH)
+print("Dataset loaded successfully.")
+
+# Drop the unique identifier
+df.drop(columns=['CustomerID'], inplace=True) # Corrected unique identifier
+
+if "Unnamed: 0" in df.columns:
+  df = df.drop(columns=["Unnamed: 0"])
+
+# Identify categorical and numerical columns
+# Assuming 'CityTier' is already numerical based on description (Tier 1, 2, 3)
+# Other numerical columns based on description: Age, NumberOfPersonVisiting, PreferredPropertyStar, NumberOfTrips, NumberOfChildrenVisiting, MonthlyIncome, PitchSatisfactionScore, NumberOfFollowups, DurationOfPitch, Passport, OwnCar
+numerical_cols = ['Age', 'NumberOfPersonVisiting', 'PreferredPropertyStar', 'NumberOfTrips', 'NumberOfChildrenVisiting', 'MonthlyIncome', 'PitchSatisfactionScore', 'NumberOfFollowups', 'DurationOfPitch', 'Passport', 'OwnCar', 'CityTier']
+# Nominal categorical columns to be one-hot encoded
+nominal_categorical_cols = ['TypeofContact', 'Occupation', 'Gender', 'MaritalStatus', 'Designation', 'ProductPitched']
 
 
-Xtrain_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/Xtrain.csv"
-Xtest_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/Xtest.csv"
-ytrain_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/ytrain.csv"
-ytest_path = "hf://datasets/sauravghosh2109/tourism-package-predictor/ytest.csv"
+# Separate target variable
+target_col = 'ProdTaken' # Corrected target column
+X = df.drop(columns=[target_col])
+y = df[target_col]
 
-# Load the processed data splits
-Xtrain = pd.read_csv(Xtrain_path)
-Xtest = pd.read_csv(Xtest_path)
-ytrain = pd.read_csv(ytrain_path)['ProdTaken'] # Extract the 'ProdTaken' column
-ytest = pd.read_csv(ytest_path)['ProdTaken'] # Extract the 'ProdTaken' column
+# Create a column transformer for one-hot encoding nominal categorical features
+# Use remainder='passthrough' to keep numerical columns
+# Set sparse_output=False to get a dense array
+preprocessor = ColumnTransformer(
+    transformers=[
+        ('onehot', OneHotEncoder(handle_unknown='ignore', sparse_output=False), nominal_categorical_cols)
+    ],
+    remainder='passthrough'
+)
 
-print("Processed data loaded successfully.")
-print(f"Xtrain shape: {Xtrain.shape}")
-print(f"Xtest shape: {Xtest.shape}")
-print(f"ytrain shape: {ytrain.shape}")
-print(f"ytest shape: {ytest.shape}")
+
+# Apply preprocessing
+X_processed = preprocessor.fit_transform(X)
+
+# Get feature names after preprocessing
+# This will include one-hot encoded feature names and original numerical feature names
+all_feature_names = preprocessor.get_feature_names_out()
+
+# Convert the processed data back to a DataFrame to maintain column names
+X_processed_df = pd.DataFrame(X_processed, columns=all_feature_names)
+
+print(f"Shape of X_processed: {X_processed.shape}")
+print(f"Number of feature names: {len(all_feature_names)}")
+print("Feature names:", all_feature_names)
+
+
+# Perform train-test split
+Xtrain, Xtest, ytrain, ytest = train_test_split(
+    X_processed_df, y, test_size=0.2, random_state=42
+)
+
+# Save the processed data splits to CSV files
+Xtrain.to_csv("Xtrain.csv",index=False)
+Xtest.to_csv("Xtest.csv",index=False)
+ytrain.to_csv("ytrain.csv",index=False)
+ytest.to_csv("ytest.csv",index=False)
 
 
 # Re-identify numerical features based on the processed data (excluding one-hot encoded columns)
